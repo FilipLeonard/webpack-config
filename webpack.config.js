@@ -15,7 +15,8 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        // babel is already setup to handle jsx so we just need to add the optional "x"
+        test: /\.jsx?$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -33,6 +34,11 @@ module.exports = {
         ],
       },
     ],
+  },
+
+  resolve: {
+    // when you import something, you can omit these extensions
+    extensions: ['.js', '.jsx'],
   },
 
   devtool: 'source-map',
