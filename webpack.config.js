@@ -10,6 +10,11 @@ module.exports = {
   mode,
   target,
 
+  output: {
+    // any asset that comes out goes into this folder having this naming
+    assetModuleFilename: 'images/[hash][ext][query]',
+  },
+
   plugins: [new MiniCssExtractPlugin()],
 
   module: {
@@ -27,11 +32,32 @@ module.exports = {
         test: /\.(s[ac]|c)ss$/i,
         // Webpack reads&processes right-to-left from arrays
         use: [
-          MiniCssExtractPlugin.loader,
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '',
+            },
+          },
+          // MiniCssExtractPlugin.loader,
           'css-loader',
           'postcss-loader',
           'sass-loader',
         ],
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        // outputs all the files
+        // type: 'asset/resource',
+        // inline assets into js, in base64 format
+        // type: 'asset/inline',
+        // webpack decides whether inline or output into folder, based on image size (default max size is 8kb)
+        type: 'asset',
+        // overwrite the default size
+        // parser: {
+        //   dataUrlCondition: {
+        //     maxSize: 30 * 1024,
+        //   },
+        // },
       },
     ],
   },
