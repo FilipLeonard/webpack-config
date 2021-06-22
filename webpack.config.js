@@ -1,18 +1,40 @@
 const path = require('path');
 
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-const mode =
-  process.env.NODE_ENV === 'production' ? process.env.NODE_ENV : 'development';
+// const mode =
+//   process.env.NODE_ENV === 'production' ? process.env.NODE_ENV : 'development';
 
-// fixes browserslist live reloading bug
-const target = process.env.NODE_ENV === 'production' ? 'browserslist' : 'web';
+// // fixes browserslist live reloading bug
+// const target = process.env.NODE_ENV === 'production' ? 'browserslist' : 'web';
+
+let mode = 'development';
+let target = 'web';
+const plugins = [
+  // removes output path before every build
+  new CleanWebpackPlugin(),
+  new MiniCssExtractPlugin(),
+  new HtmlWebpackPlugin({
+    template: './src/index.html',
+  }),
+];
+
+if (process.env.NODE_ENV === 'production') {
+  mode = 'production';
+  target = 'browserslist';
+} else {
+  plugins.push(new ReactRefreshWebpackPlugin());
+}
 
 module.exports = {
   mode,
   target,
+
+  // react fast refresh setup needs this
+  entry: './src/index.js',
 
   output: {
     // not necessary but clean-webpack-plugin uses this
@@ -21,14 +43,7 @@ module.exports = {
     assetModuleFilename: 'images/[hash][ext][query]',
   },
 
-  plugins: [
-    // removes output path before every build
-    new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin(),
-    new HtmlWebpackPlugin({
-      template: './src/index.html',
-    }),
-  ],
+  plugins,
 
   module: {
     rules: [
