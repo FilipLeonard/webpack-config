@@ -1,4 +1,8 @@
+const path = require('path');
+
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const mode =
   process.env.NODE_ENV === 'production' ? process.env.NODE_ENV : 'development';
@@ -11,11 +15,20 @@ module.exports = {
   target,
 
   output: {
+    // not necessary but clean-webpack-plugin uses this
+    path: path.resolve(__dirname, 'dist'),
     // any asset that comes out goes into this folder having this naming
     assetModuleFilename: 'images/[hash][ext][query]',
   },
 
-  plugins: [new MiniCssExtractPlugin()],
+  plugins: [
+    // removes output path before every build
+    new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin(),
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+    }),
+  ],
 
   module: {
     rules: [
